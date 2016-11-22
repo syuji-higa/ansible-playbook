@@ -1,0 +1,7 @@
+- hosts: hosts
+  user: user
+  tasks:
+    - name: make .ssh folder
+      command: mkdir ~/.ssh
+    - name: chmod .ssh folder
+      command: chmod 700 ~/.ssh
