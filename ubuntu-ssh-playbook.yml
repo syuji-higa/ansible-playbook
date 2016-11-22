@@ -1,0 +1,35 @@
+- hosts: hosts
+  user: user
+  become: true
+  tasks:
+    - name: authorized_keys chown
+      command: chown [ユーザー名]:[ユーザー名] .ssh/authorized_keys
+      become: true
+    - name: root login ban & ssh setting
+      replace: >
+        dest=/etc/ssh/sshd_config
+        regexp='^PermitRootLogin .+$'
+        replace='PermitRootLogin no'
+        backup=yes
+      become: true
+    - name: ssh port setting
+      replace: >
+        dest=/etc/ssh/sshd_config
+        regexp='^Port 22$'
+        replace='Port [1024-65535]'
+      become: true
+    - name: ssh authorized_keys setting
+      replace: >
+        dest=/etc/ssh/sshd_config
+        regexp='^#AuthorizedKeysFile'
+        replace='AuthorizedKeysFile'
+      become: true
+    - name: ssh PasswordAuthentication setting
+      replace: >
+        dest=/etc/ssh/sshd_config
+        regexp='^#PasswordAuthentication .+$'
+        replace='PasswordAuthentication no'
+      become: true
+    - name: ssh restart
+      command: service ssh restart
+      become: true
