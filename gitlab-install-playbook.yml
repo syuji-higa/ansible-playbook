@@ -1,0 +1,24 @@
+- hosts: hosts
+  user: user
+  become: true
+  tasks:
+    - name: install packages
+      apt: name={{item}} state=present update_cache=yes
+      become: true
+      with_items:
+        - curl
+        - openssh-server
+        - ca-certificates
+        - postfix
+    - name: download gitlab-ce
+      get_url: url=https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh dest=/tmp/
+      become: true
+    - name: install gitlab
+      command: bash /tmp/script.deb.sh
+      become: true
+    - name: install gitlab-ce
+      apt: name=gitlab-ce
+      become: true
+    - name: gitlab reconfigure
+      command: gitlab-ctl reconfigure
+      become: true
