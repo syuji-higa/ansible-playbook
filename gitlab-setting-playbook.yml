@@ -1,0 +1,26 @@
+- hosts: hosts
+  user: user
+  become: true
+  tasks:
+    - name: rewriting gitlab.rb external_url
+      replace: >
+        dest=/etc/gitlab/gitlab.rb
+        regexp='^external_url \'.+\'$'
+        replace='external_url \'http://xxxxx.xxxxx.com:8081\''
+        backup=yes
+      become: true
+    - name: rewriting gitlab.rb unicorn worker_processes
+      replace: >
+        dest=/etc/gitlab/gitlab.rb
+        regexp='^# unicorn\[\'worker_processes\'\]'
+        replace='unicorn[\'worker_processes\']'
+      become: true
+    - name: rewriting gitlab.rb postgresql effective_cache_size
+      replace: >
+        dest=/etc/gitlab/gitlab.rb
+        regexp='^# postgresql\[\'effective_cache_size\'\]'
+        replace='postgresql[\'effective_cache_size\']'
+      become: true
+    - name: gitlab reconfigure
+      command: gitlab-ctl reconfigure
+      become: true
