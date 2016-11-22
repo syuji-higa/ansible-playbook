@@ -1,0 +1,15 @@
+- hosts: hosts
+  user: user
+  become: true
+  tasks:
+    - name: install packages
+      apt: name={{item}} state=present update_cache=yes
+      with_items:
+        - iptables
+        - vim
+        - sysv-rc-conf
+        - language-pack-ja
+    - name: japanese correspondence 1
+      command: dpkg-reconfigure locales
+    - name: japanese correspondence 2
+      command: update-locale LANG=ja_JP.UTF-8
